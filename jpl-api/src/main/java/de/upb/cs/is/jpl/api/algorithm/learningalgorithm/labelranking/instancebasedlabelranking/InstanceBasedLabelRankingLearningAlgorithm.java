@@ -69,7 +69,7 @@ public class InstanceBasedLabelRankingLearningAlgorithm extends ALearningAlgorit
             kNearestNeighborConfiguration.getNumberOfNeighbors());
       KNearestNeighborLearningModel kNNModel = kNearestNeighborClassification.train(baselearnerDatasetWithFeaturesAndIdsAsPredictor);
 
-      ILearningAlgorithm rankAggregationAlgorithm = ((InstanceBasedLabelRankingConfiguration) getDefaultAlgorithmConfiguration())
+      ILearningAlgorithm rankAggregationAlgorithm = ((InstanceBasedLabelRankingConfiguration) getAlgorithmConfiguration())
             .getRankAggregationAlgorithm();
 
       return new InstanceBasedLabelRankingLearningModel(labelRankingDataset, kNNModel, rankAggregationAlgorithm,
