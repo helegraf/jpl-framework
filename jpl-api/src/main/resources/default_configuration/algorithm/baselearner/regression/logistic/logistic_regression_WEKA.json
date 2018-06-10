@@ -1,0 +1,52 @@
+{
+	"name": "Logistic Regression - WEKA implementation",
+	"author": "Eibe Frank, Mark A. Hall, and Ian H. Witten",
+	"year": 2016,
+	"title": "The WEKA Workbench",
+	"parameter": [
+		{
+			"name": "debug",
+			"range": "boolean",
+			"description": "Wether debugging output is enabled."
+		},
+		{
+			"name": "useConjugateGradientDescent",
+			"range": "boolean",
+			"description": "Wether conjugate gradient descent is used."
+		},
+		{
+			"name": "ridge",
+			"range": "double",
+			"description": "The ridge in the log-likelihood."
+		},
+		{
+			"name": "maxIts",
+			"range": "int",
+			"description": "The maximum number of iterations."
+		},
+		{
+			"name": "batchSize",
+			"range": "int",
+			"description": "The preferred batch size for batch predictions."
+		},
+		{
+			"name": "numDecimalPlaces",
+			"range": "int",
+			"description": "The number of decimal places shown in the output."
+		},
+		{
+			"name": "doNotCheckCapabilities",
+			"range": "boolean",
+			"description": "Wether capabilities are not checked."
+		}
+	],
+	"default_parameter_values": {
+		"debug": "false",
+		"useConjugateGradientDescent": "false",
+		"ridge": 0.00000001,
+		"maxIts": -1,
+		"batchSize": 100,
+		"numDecimalPlaces": 4,
+		"doNotCheckCapabilities": "false"
+	}
+}
