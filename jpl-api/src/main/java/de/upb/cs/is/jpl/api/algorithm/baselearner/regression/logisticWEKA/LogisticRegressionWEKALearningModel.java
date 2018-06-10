@@ -10,6 +10,7 @@ import weka.classifiers.functions.Logistic;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.filters.unsupervised.attribute.NumericToNominal;
 
 /**
  * Encapsulates a trained WEKA {@link Logistic} model.
@@ -21,6 +22,7 @@ public class LogisticRegressionWEKALearningModel extends ABaseLearningModel<Doub
 
 	private Logistic learner;
 	private Instances trainingData;
+	private NumericToNominal filter;
 
 	/**
 	 * Creates a new WEKA-based logistic regression model which can make predictions
@@ -31,25 +33,37 @@ public class LogisticRegressionWEKALearningModel extends ABaseLearningModel<Doub
 	 * @param trainingData
 	 *            the data the learner was trained on
 	 */
-	public LogisticRegressionWEKALearningModel(Logistic learner, Instances trainingData) {
+	public LogisticRegressionWEKALearningModel(Logistic learner, Instances trainingData, NumericToNominal filter) {
 		super(trainingData.numAttributes() - 1);
 		this.learner = learner;
 		this.trainingData = trainingData;
+		this.filter = filter;
 	}
 
 	@Override
 	public Double predict(IInstance<?, ?, ?> instance) throws PredictionFailedException {
 		// Convert the instance to a WEKA instance
 		BaselearnerInstance convertedInstance = (BaselearnerInstance) instance;
-		Instance wekaInstance = new DenseInstance(convertedInstance.getWeight(), convertedInstance.getFeatureVector());
-
-		// Assign to instances training data
+		double [] onlyFeaturesVector = convertedInstance.getFeatureVector();
+		double[] featureVector = new double [onlyFeaturesVector.length];
+		for (int i = 0; i < onlyFeaturesVector.length; i++) {
+			featureVector[i] = onlyFeaturesVector[i];
+		}
+		Instance wekaInstance = new DenseInstance(convertedInstance.getWeight(), featureVector);
 		wekaInstance.setDataset(trainingData);
+		Instance processedInstance;
+		try {
+			filter.input(wekaInstance);
+			filter.batchFinished();
+			processedInstance = filter.output();
+		} catch (Exception e) {
+			throw new PredictionFailedException(e);
+		}
 
 		// Make prediction
 		Double prediction;
 		try {
-			prediction = learner.classifyInstance(wekaInstance);
+			prediction = learner.classifyInstance(processedInstance);
 		} catch (Exception e) {
 			throw new PredictionFailedException(e);
 		}
@@ -73,6 +87,7 @@ public class LogisticRegressionWEKALearningModel extends ABaseLearningModel<Doub
 		int result = super.hashCode();
 		result = prime * result + ((learner == null) ? 0 : learner.hashCode());
 		result = prime * result + ((trainingData != null) ? 0 : trainingData.hashCode());
+		result = prime * result + ((filter != null) ? 0 : filter.hashCode());
 		return result;
 	}
 
@@ -88,7 +103,9 @@ public class LogisticRegressionWEKALearningModel extends ABaseLearningModel<Doub
 		if (learner == null) {
 			if (other.learner != null)
 				return false;
-		} else if (!trainingData.equals(other.trainingData))
+		} else if (!trainingData.equals(other.trainingData)) {
+			return false;
+		} else if (!filter.equals(other.filter))
 			return false;
 		return true;
 	}
