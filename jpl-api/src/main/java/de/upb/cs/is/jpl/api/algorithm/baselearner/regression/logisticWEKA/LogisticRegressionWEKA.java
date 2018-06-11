@@ -87,20 +87,16 @@ public class LogisticRegressionWEKA extends ABaselearnerAlgorithm<LogisticRegres
 				featureVector[j] = featureVectors[i][j];
 			}
 			featureVector[featureVector.length - 1] = correctResult;
-			for (int j = 0; j < featureVector.length; j++) {
-				System.out.print(featureVector[i] + ", ");
-			}
-			System.out.println(correctResult);
-			System.out.println("len: " + featureVector.length);
 			train.add(new DenseInstance(weight, featureVector));
 		}
 		train.setClassIndex(train.numAttributes() - 1);
 
 		// Transform the target into a nominal target
 		Instances output;
+		NumericToNominal filter;
 		try {
 			// Transform numeric attribute to nominal
-			NumericToNominal filter = new NumericToNominal();
+			filter = new NumericToNominal();
 			filter.setAttributeIndices(String.valueOf(train.numAttributes()));
 			filter.setInputFormat(train);
 			for (Instance instance : train) {
@@ -115,7 +111,6 @@ public class LogisticRegressionWEKA extends ABaselearnerAlgorithm<LogisticRegres
 		} catch (Exception e1) {
 			throw new TrainModelsFailedException(e1);
 		}
-		System.out.println(output);
 
 		// Set up logistic
 		Logistic logistic = new Logistic();
@@ -134,7 +129,7 @@ public class LogisticRegressionWEKA extends ABaselearnerAlgorithm<LogisticRegres
 			throw new TrainModelsFailedException(e);
 		}
 
-		return null;
+		return new LogisticRegressionWEKALearningModel(logistic, output, filter);
 	}
 
 	@Override
