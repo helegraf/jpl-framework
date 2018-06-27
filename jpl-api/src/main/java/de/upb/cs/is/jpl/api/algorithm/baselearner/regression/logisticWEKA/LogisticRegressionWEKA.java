@@ -14,8 +14,6 @@ import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.filters.unsupervised.attribute.AddValues;
-import weka.filters.unsupervised.attribute.NumericToBinary;
 import weka.filters.unsupervised.attribute.NumericToNominal;
 
 /**
